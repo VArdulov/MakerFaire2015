@@ -1,6 +1,8 @@
 #ifndef _H_MATRIX_ALGORITHMS
 #define _H_MATRIX_ALGORITHMS
+
 #include "Mat.h"
+#include "vector.h"
 
 typedef float Real;
 

@@ -6,7 +6,7 @@
 #include "Mat.h"
 using namespace std;
 
-#define DEBUG_MAT 1
+//#define DEBUG_MAT 1
 
 #if DEBUG_MAT
 int main(){
@@ -150,3 +150,37 @@ Mat& Mat::operator=(const Mat& m){
   }
   return *this;
 }
+void print(const Mat& m){
+  for(int i = 0; i < m.get_rows(); i++){
+    for(int j = 0; j < m.get_cols(); j++){
+      printf("%7.2f", m.get(i , j));
+    }
+    printf("\n");
+  }
+}
+
+Mat random_mat(int r, int c, int N){
+  Mat M = Mat(c,r);
+  for(int i = 0; i < r; i++){
+    for(int j = 0; j < c; j++){
+      M[i][j] = rand() % N;
+    }
+  }
+  return M;
+}
+Mat vector_to_matrix(const Vector& V){
+  Mat m(V.size(), 1);
+  for(int i = 0; i < m.get_rows(); i++){
+    m[i][0] = V[i];
+  }
+  return m;
+}
+Vector matrix_to_vector(const Mat& m){
+  assert(m.get_cols() == 1);
+  Vector v(m.get_rows());
+  for(int i = 0; i < m.get_rows(); i++){
+    v[i] = m.get(i,0);
+  }
+  return v;
+}
+
