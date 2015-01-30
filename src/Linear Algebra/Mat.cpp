@@ -1,38 +1,81 @@
 #include <iostream>
+#include <assert.h>
+#include <time.h>
+#include <stdlib.h>
+
 #include "Mat.h"
 using namespace std;
 
+#define DEBUG_MAT 1
 
+#if DEBUG_MAT
 int main(){
-  cout << "testing this shit" << endl;
-  Mat m = random_mat(4, 4, 10);
+  srand(time(NULL));
+  
+  cout << "testing matrix" << endl;
+  
+  Mat m = random_mat(3, 2, 6);
+  Vector v = random_vector(2,6);
   print(m);
   cout << endl << endl;
-  m[0][0] = 69;
-  print(m);
+  v.print();
+  cout << endl << endl;
+  (m * v).print();
   return 0;
 }
-Mat Mat::inverse() const{
-  //compute inverse using row reduction method
-  //or something better if yoou know a better algorithm
-  // don't use cramer's rule though, it's very unefficent
+#endif
+Vector operator*(const Mat& left_side, const Vector& right_side){
+  assert(left_side.get_cols() == right_side.size());
+  Vector v(left_side.get_rows());
+  for(int i = 0; i < v.size(); i++){
+    Real sum = 0;
+    for(int k = 0; k < left_side.get_cols(); k++){
+      sum += left_side.get(i, k) * right_side[k];
+    }
+    v[i] = sum;
+  }
+  return v;
 }
-Mat Mat::pseudo_inverse() const{ //panrose psudo inverse
+Mat operator*(const Mat& left_side, const Mat& right_side){
+  assert(left_side.get_cols() == right_side.get_rows());
   
-} 
-//operator overloading stuff
-Mat operator*(const Mat& right_side, const Mat& left_side){
-  
+  Mat m(left_side.get_rows(), right_side.get_cols());
+  for(int i = 0; i < left_side.get_rows(); i++){
+    for(int j = 0; j < right_side.get_cols(); j++){
+      Real sum = 0;
+      for(int k = 0; k < left_side.get_cols(); k++){
+	sum += left_side.get(i ,k) * right_side.get(k,j);
+      }
+      m[i][j] = sum;
+    }
+  }
+  return m;
 }
-Mat operator+(const Mat& right_side, const Mat& left_side){
-  
+Mat operator*(Real f, const Mat& right_side){
+  Mat m(right_side);
+  for(int i = 0; i < right_side.get_rows(); i++){
+    for(int j = 0; j < right_side.get_cols(); j++){
+      m[i][j] *= f;
+    }
+  }
+  return m;
 }
-Vector operator*(const Mat& right_side, const Vector& left_side){
-  
+Mat operator+(const Mat& left_side, const Mat& right_side){
+  assert(
+	 right_side.get_cols() == left_side.get_cols()
+	 &&
+	 right_side.get_rows() == left_side.get_rows());
+  Mat m(left_side);
+  for(int i = 0; i < m.get_rows(); i++){
+    for(int j = 0; j < m.get_cols(); j++){
+      m[i][j] += right_side.get( i , j);
+    }
+  }
+  return m;
 }
-
 //utils
 Real Mat::get(int _r, int _c) const{
+  assert(in_range(_r, _c));
   return arr[_r][_c];
 }
 int Mat::get_rows() const{
@@ -42,10 +85,19 @@ int Mat::get_cols() const{
   return cols;
 }
 Real& Mat::operator()(int _r, int _c){
+  assert(in_range(_r, _c));
   return arr[_r][_c];
 }
 Real* Mat::operator[](int _ind){
+  assert(in_range(_ind, 0));
   return arr[_ind];
+}
+bool Mat::in_range(int _r, int _c) const{
+  bool ret_val = _r < rows;
+  ret_val &= _r >= 0;
+  ret_val &= _c < cols;
+  ret_val &= _c >= 0;
+  return ret_val;
 }
 
 //constructors and "rule of three" stuff
@@ -60,7 +112,6 @@ Mat::Mat(int _cols, int _rows){
   alloc_mat();
 }
 Mat::Mat(const Mat& m){
-  dealloc_mat();
   cols = m.get_cols();
   rows = m.get_rows();
   alloc_mat();

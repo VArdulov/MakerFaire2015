@@ -4,17 +4,10 @@
 #include <time.h>
 #include "vector.h"
 
-//#define DEBUG 1
+//#define DEBUG_VECTOR 1
 
 
-#if DEBUG
-Vector random_vector(int n , int M){
-  Vector v(n);
-  for(int i = 0; i < n; i++){
-    v[i] = rand() % M;
-  }
-  return v;
-}
+#if DEBUG_VECTOR
 int main(){
   srand(time(NULL));
   Vector v1 = random_vector(3, 10);
@@ -27,7 +20,13 @@ int main(){
   return 0;
 }
 #endif
-
+Vector random_vector(int n , int M){
+  Vector v(n);
+  for(int i = 0; i < n; i++){
+    v[i] = rand() % M;
+  }
+  return v;
+}
 Real dot(const Vector& v, const Vector& x){
   Real sum = 0;
   for(int i = 0; i < v.size(); i++){

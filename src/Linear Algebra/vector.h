@@ -32,6 +32,6 @@ Vector operator+(Vector l, const Vector& r);
 Vector operator-(Vector l, const Vector& r);
 Vector operator*(const Real& sc, Vector l);
 Vector operator*(Vector l, const Real& sc);
-
+Vector random_vector(int n , int M);
 
 #endif
