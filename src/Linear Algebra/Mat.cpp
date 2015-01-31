@@ -106,7 +106,7 @@ Mat::Mat(){
   alloc_mat();
   arr[0][0] = 1;
 }
-Mat::Mat(int _cols, int _rows){
+Mat::Mat(int _rows, int _cols){
   cols = _cols;
   rows = _rows;
   alloc_mat();
