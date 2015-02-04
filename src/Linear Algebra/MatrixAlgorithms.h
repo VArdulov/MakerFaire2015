@@ -15,7 +15,11 @@ Mat Tr(const Mat& M); //Transpose
 Mat Inverse(const Mat& M);
 Mat pseudo_inverse();
 
-void swop_rows(Mat* );
+void row_reduce(Mat* m);
+void swop_rows(Mat* m, int r1, int r2);
+void multiply_row(Mat* m, int r1, Real alph);
+void multiply_and_add_row(Mat* m, int r1, int r2, Real alph);
+
 
 Mat get_identity(int n);
 Mat get_zeros(int n);
