@@ -12,8 +12,7 @@ using namespace std;
 int main(){
   srand(time(NULL));
   
-  cout << "testing matrix" << endl;
-  
+  cout << "testing matrix" << endl;  
   Mat m = random_mat(3, 2, 6);
   Vector v = random_vector(2,6);
   print(m);
@@ -160,7 +159,7 @@ void print(const Mat& m){
 }
 
 Mat random_mat(int r, int c, int N){
-  Mat M = Mat(c,r);
+  Mat M = Mat(r,c);
   for(int i = 0; i < r; i++){
     for(int j = 0; j < c; j++){
       M[i][j] = rand() % N;
