@@ -15,10 +15,14 @@ Mat Tr(const Mat& M); //Transpose
 Mat Inverse(const Mat& M);
 Mat pseudo_inverse(const Mat& M);
 
+Vector solve_linear_equation(const Mat& M, const Vector& v);
+
 void row_reduce(Mat* m);
 void swop_rows(Mat* m, int r1, int r2);
 void multiply_row(Mat* m, int r1, Real alph);
 void multiply_and_add_row(Mat* m, int r1, int r2, Real alph);
+
+Vector solve_linear_equation(Mat* M, Vector* v);
 
 
 Mat get_identity(int n);

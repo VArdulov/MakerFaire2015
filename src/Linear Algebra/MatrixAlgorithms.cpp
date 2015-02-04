@@ -27,6 +27,33 @@ int main(){
 }
 #endif
 
+Vector solve_linear_equation(Mat* m, Vector* v){ 
+  Mat& M = *m; Vector& V = *v;
+  
+  assert(M.get_rows() == V.size());
+  Mat aux_mat(V.size(), M.get_cols() + 1);
+  for(int i = 0; i < M.get_rows(); i++){
+    for(int j = 0; j < M.get_cols(); j++){
+      aux_mat[i][j] = M[i][j];
+    }
+    aux_mat[i][M.get_cols()] = V[i];
+  }
+  cout << endl << "Aux MAt" << endl;
+  row_reduce(aux_mat);
+  
+  Vector solution(M.get_cols());
+  for(int i = 0; i < M.get_cols(); i++){
+    solution[i] = aux_mat[i][M.get_cols()];
+  }
+  return solution;
+}
+
+
+Vector solve_linear_equation(const Mat& M, const Vector& v){
+  Mat temp_m(M);
+  Vector temp_v(v);
+  return solve_linear_equation(*temp_m, *temp_v);
+}
 Mat Inverse(const Mat& M){
   assert(M.get_rows() == M.get_cols()); //check if matrix is square
   Mat aux_mat(M.get_rows(),2 * M.get_cols());
