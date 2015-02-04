@@ -13,7 +13,7 @@ Mat multiply_and_add_row(const Mat& M, int row_src, int row_dest, Real alph);
 
 Mat Tr(const Mat& M); //Transpose
 Mat Inverse(const Mat& M);
-Mat pseudo_inverse();
+Mat pseudo_inverse(const Mat& M);
 
 void row_reduce(Mat* m);
 void swop_rows(Mat* m, int r1, int r2);

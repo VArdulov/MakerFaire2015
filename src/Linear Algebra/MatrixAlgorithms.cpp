@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
+#include <assert.h>
 
 using std::cout;
 using std::endl;
@@ -15,17 +16,67 @@ int main(){
   printf("DEBUGING Matrix Algorithm \n");
   srand(time(NULL));
   
-  Mat m = random_mat(1 + rand() % 4, 1 + rand() % 4, 10);
+  Mat m = random_mat(3, 3, 10);
   print(m);
   cout << endl << endl;
-  swop_rows(&m, 0, rand() % m.get_rows());
-  print(m);
+  Mat m2 = pseudo_inverse(m);
+  print(m2);
+  cout << endl;
+  print(m2 * m);
   return 0;
 }
 #endif
 
-void row_reduce(Mat* m){
+Mat Inverse(const Mat& M){
+  assert(M.get_rows() == M.get_cols()); //check if matrix is square
+  Mat aux_mat(M.get_rows(),2 * M.get_cols());
+
   
+  for(int i = 0; i < M.get_rows(); i++){
+    for(int j = 0; j < M.get_cols(); j++){
+      aux_mat[i][j] = M.get(i, j);
+      aux_mat[i][j + M.get_cols()] = (i == j)? 1 : 0;
+    }
+  }
+  /*  cout << endl << "Aux Matrix: " << endl;
+  print(aux_mat);
+  cout << endl;*/
+  row_reduce(&aux_mat);
+  Mat ret_mat(M.get_rows(), M.get_cols());
+  for(int i = 0; i < M.get_rows(); i++){
+    for(int j = 0; j < M.get_cols(); j++){
+      ret_mat[i][j] = aux_mat[i][j + M.get_cols()];
+    }
+  }
+  return ret_mat;
+}
+
+Mat pseudo_inverse(const Mat& A){
+  return (Tr(A) * Inverse(A * Tr(A)) );
+}
+
+void row_reduce(Mat* m){
+  Mat& M = *m; //to make syntax easier
+  for(int row = 0; row < M.get_rows() && row < M.get_cols(); row++){
+    int temp_row = row;
+    while(temp_row < M.get_rows()){
+      if(M[temp_row][row] != 0){
+	goto FOUND_A_NON_ZERO;
+      }
+      temp_row++;
+    }
+    continue; //basically means that the whole colom is full of 0's
+             //i.e no pivot point here 
+  FOUND_A_NON_ZERO:
+    swop_rows(m, row, temp_row);
+    //scale everything
+    multiply_row(m, row, 1.0 / M[row][row]);
+    //in this part we reduce from all other rows;
+    for(int i = 0; i < M.get_rows(); i++){
+      if(i != row)
+	multiply_and_add_row(m, row, i, -M[i][row]); 
+    }
+  }
 }
 void swop_rows(Mat* m, int r1, int r2){
   Real temp;
